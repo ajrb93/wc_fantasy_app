@@ -90,3 +90,11 @@ with tab_fantasy:
             columns={'PPR':'Max','Proj':'Projected'})
         top_teams[" "] = top_teams["Short"].apply(load_img_bytes)
         st.dataframe(top_teams.drop(columns='Short'), height=250, use_container_width=True, hide_index=True,width = "content",column_config=column_config)
+        st.write(player_detail[" "].apply(type).value_counts())
+        st.write(player_detail[" "].head(20))
+        bad = player_detail[player_detail[" "].isna() |
+                    (player_detail[" "] == "")]
+
+        st.write(bad)
+        st.write(type(player_detail["Flag"].iloc[0]))
+        st.write(len(player_detail["Flag"].iloc[0]))
