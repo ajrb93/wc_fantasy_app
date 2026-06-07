@@ -3,6 +3,7 @@ import matplotlib
 import pandas as pd
 from pathlib import Path
 from PIL import Image
+import base64
 
 # --- 1. CONFIG & COMPACT STYLING ---
 st.set_page_config(layout="wide", page_title="World Cup Fantasy")
