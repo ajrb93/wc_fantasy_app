@@ -40,8 +40,8 @@ def load_img_bytes(code):
     path = BASE_DIR / "data" / "flags" / f"{code}.png"
     return Image.open(path).convert("RGBA")
 
-standings = pd.read_feather('data/standings.ftr')
-selected_standings = pd.read_feather('data/selected_standings.ftr')
+standings = pd.read_feather('data/standings.ftr').rename(columns={' ':'Flag'})
+selected_standings = pd.read_feather('data/selected_standings.ftr').rename(columns={' ':'Flag'})
 
 fmt_dict = {'Points': '{:.0f}', 'Max': '{:.0f}', 'Projected': '{:.1f}','Uniqueness':'{:0.1%}','W':'{:.0f}','D':'{:.0f}','L':'{:.0f}',
             'GF':'{:.0f}','GA':'{:.0f}','Points':'{:.0f}','1st':'{:0.2%}','2nd':'{:0.2%}','3rd':'{:0.2%}','4th':'{:0.2%}'}
@@ -62,13 +62,13 @@ with tab_fantasy:
         st.markdown("### Standings - Detail")
         ordered_managers = player_standings['Person'].tolist()
         for i, manager in enumerate(ordered_managers):
-            player_detail = selected_standings[selected_standings.Person == manager][[' ','Country','Short','Group','Points','PPR','Proj','Uniqueness']].rename(
+            player_detail = selected_standings[selected_standings.Person == manager][['Flag','Country','Short','Group','Points','PPR','Proj','Uniqueness']].rename(
                 columns={'PPR':'Max','Proj':'Projected'})
-            player_detail[" "] = player_detail["Short"].apply(load_img_bytes)
+            player_detail["Flag"] = player_detail["Short"].apply(load_img_bytes)
             pts_val = selected_standings[selected_standings.Person == manager].Points.sum()
             proj_val = selected_standings[selected_standings.Person == manager].Proj.sum()
             leader_icon = "🥇 " if i == 0 else "🥈 " if i == 1 else "🥉 " if i == 2 else ""
-            column_config = {" ": st.column_config.ImageColumn(" ")}
+            column_config = {"Flag": st.column_config.ImageColumn("Flag")}
             for col, fmt in fmt_dict.items():
                 if fmt == "{:.0f}":
                     column_config[col] = st.column_config.NumberColumn(col,format="%.0f")
@@ -87,9 +87,12 @@ with tab_fantasy:
         st.markdown('To come')
 
         st.markdown("### Top Teams")
-        top_teams = standings.sort_values(['Points','Proj'],ascending=False)[[' ','Country','Short','Group','Points','PPR','Proj','W','D','L','GD']].rename(
+        top_teams = standings.sort_values(['Points','Proj'],ascending=False)[['Flag','Country','Short','Group','Points','PPR','Proj','W','D','L','GD']].rename(
             columns={'PPR':'Max','Proj':'Projected'})
-        top_teams[" "] = top_teams["Short"].apply(load_img_bytes)
+        top_teams["Flag"] = top_teams["Short"].apply(load_img_bytes)
         st.dataframe(top_teams.drop(columns='Short'), height=250, use_container_width=True, hide_index=True,width = "content",column_config=column_config)
-        st.write(player_detail[" "].apply(type).value_counts())
-        st.write(fmt_dict)
+        st.write(player_detail["Flag"].apply(type).value_counts())
+        st.write(column_config)
+        st.write(column_config.keys())
+        st.write(player_detail.columns.tolist())
+        st.write(type(player_detail["Flag"].iloc[0]))
