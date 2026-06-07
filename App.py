@@ -131,4 +131,4 @@ with tab_tournament:
                               use_container_width=True, hide_index=True,column_config=column_config)
         
 with tab_selections:
-
+    pass
