@@ -55,7 +55,7 @@ fmt_dict = {'Points': '{:.0f}', 'Max': '{:.0f}', 'Projected': '{:.1f}','Uniquene
 tab_fantasy, tab_tournament, tab_selections = st.tabs([f"🏆 Fantasy Results", "Team Results","Selections"])
 
 with tab_fantasy:
-    col1, col2, col3 = st.columns([2/3,4/5,1])
+    col1, col2, col3 = st.columns([0.65,0.85,1])
     with col1:
         st.markdown("### Standings")
         player_standings = selected_standings.groupby('Person').agg({'Points':'sum','PPR':'sum','Proj':'sum','Uniqueness':'mean'}).sort_values(
