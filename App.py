@@ -48,7 +48,7 @@ def as_data_uri(code):
 standings = pd.read_feather('data/standings.ftr').rename(columns={' ':'Flag'})
 selected_standings = pd.read_feather('data/selected_standings.ftr').rename(columns={' ':'Flag'})
 
-fmt_dict = {'Points': '{:.0f}', 'Max': '{:.0f}', 'Projected': '{:.1f}','Uniqueness':'{:0.1%}','W':'{:.0f}','D':'{:.0f}','L':'{:.0f}',
+fmt_dict = {'Points': '{:.0f}', 'Max': '{:.0f}', 'Projected': '{:.1f}','Uniqueness':'{:0.0%}','W':'{:.0f}','D':'{:.0f}','L':'{:.0f}',
             'GF':'{:.0f}','GA':'{:.0f}','Points':'{:.0f}','1st':'{:0.0%}','2nd':'{:0.0%}','3rd':'{:0.0%}','4th':'{:0.0%}',
             '32':'{:0.0%}','16':'{:0.0%}','QF':'{:0.0%}','SF':'{:0.0%}','Final':'{:0.0%}','Win':'{:0.0%}'}
 
@@ -129,3 +129,6 @@ with tab_tournament:
         knockout_detail['Win'] *= 100
         st.dataframe(knockout_detail.drop(columns='Short').style.background_gradient(cmap='RdYlGn', subset=['32', '16', 'QF', 'SF','Final','Win'], vmin=0, vmax=100),
                               use_container_width=True, hide_index=True,column_config=column_config)
+        
+with tab_selections:
+
