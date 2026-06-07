@@ -16,11 +16,6 @@ selections = selections.reset_index().rename(columns={'index':'Person'}).melt(id
 selections.pot += 1
 selections = selections.merge(selections.groupby('Country').Person.count().reset_index().rename(columns={'Person':'Count'}))
 selections['Uniqueness'] = 1 - (selections['Count'] - 1) / (selections.Person.nunique() - 1)
-selections = pd.DataFrame(selections).T
-selections = selections.reset_index().rename(columns={'index':'Person'}).melt(id_vars='Person',var_name='pot',value_name='Country')
-selections.pot += 1
-selections = selections.merge(selections.groupby('Country').Person.count().reset_index().rename(columns={'Person':'Count'}))
-selections['Uniqueness'] = 1 - (selections['Count'] - 1) / (selections.Person.nunique() - 1)
 
 groups = {'A':['MEX','RSA','KOR','CZE'],
           'B':['CAN','BIH','QAT','SUI'],
