@@ -85,7 +85,7 @@ with tab_fantasy:
                     column_config[col] = st.column_config.NumberColumn(col,format="%.2f%%")
 
             with st.expander(f"{leader_icon}{manager} | {pts_val:.0f} points | {proj_val:.1f} projected", expanded=False):
-                st.dataframe(player_detail.drop(columns='Short'), use_container_width=False, hide_index=True,width = "content",column_config=column_config)
+                st.dataframe(player_detail.drop(columns='Short'), use_container_width=True, hide_index=True,column_config=column_config)
 
     with col3:
         st.markdown('### Standings Over Time')
