@@ -113,6 +113,6 @@ with tab_tournament:
             team_detail['3rd'] *= 100
             team_detail['4th'] *= 100
             with st.expander(f"{group}",expanded=False):
-                st.dataframe(team_detail.drop(columns='Short'),
+                st.dataframe(team_detail.drop(columns='Short').style.background_gradient(cmap='RdYlGn', subset=['1st', '2nd', '3rd', '4th'], vmin=0, vmax=100),
                               use_container_width=True, hide_index=True,column_config=column_config)
 
