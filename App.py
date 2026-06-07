@@ -58,7 +58,7 @@ with tab_fantasy:
         for i, manager in enumerate(ordered_managers):
             player_detail = selected_standings[selected_standings.Person == manager][[' ','Country','Short','Group','Points','PPR','Proj','Uniqueness']].rename(
                 columns={'PPR':'Max','Proj':'Projected'})
-            player_detail[" "] = player_detail["Country_Short"].apply(lambda x: f"data/flags/{x}.png")
+            player_detail[" "] = player_detail["Short"].apply(lambda x: f"data/flags/{x}.png")
             pts_val = selected_standings[selected_standings.Person == manager].Points.sum()
             proj_val = selected_standings[selected_standings.Person == manager].Proj.sum()
             leader_icon = "🥇 " if i == 0 else "🥈 " if i == 1 else "🥉 " if i == 2 else ""
