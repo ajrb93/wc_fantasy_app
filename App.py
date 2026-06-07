@@ -36,9 +36,13 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 BASE_DIR = Path(__file__).parent
-def to_file_url(code):
+def to_base64(code):
     path = BASE_DIR / "data" / "flags" / f"{code}.png"
-    return path.resolve().as_uri()
+    return base64.b64encode(path.read_bytes()).decode()
+
+def as_data_uri(code):
+    b64 = to_base64(code)
+    return f"data:image/png;base64,{b64}"
 
 standings = pd.read_feather('data/standings.ftr').rename(columns={' ':'Flag'})
 selected_standings = pd.read_feather('data/selected_standings.ftr').rename(columns={' ':'Flag'})
@@ -64,7 +68,7 @@ with tab_fantasy:
         for i, manager in enumerate(ordered_managers):
             player_detail = selected_standings[selected_standings.Person == manager][['Flag','Country','Short','Group','Points','PPR','Proj','Uniqueness']].rename(
                 columns={'PPR':'Max','Proj':'Projected'})
-            player_detail["Flag"] = player_detail["Short"].apply(to_file_url)
+            player_detail["Flag"] = player_detail["Short"].apply(as_data_uri)
             pts_val = selected_standings[selected_standings.Person == manager].Points.sum()
             proj_val = selected_standings[selected_standings.Person == manager].Proj.sum()
             leader_icon = "🥇 " if i == 0 else "🥈 " if i == 1 else "🥉 " if i == 2 else ""
@@ -89,7 +93,7 @@ with tab_fantasy:
         st.markdown("### Top Teams")
         top_teams = standings.sort_values(['Points','Proj'],ascending=False)[['Flag','Country','Short','Group','Points','PPR','Proj','W','D','L','GD']].rename(
             columns={'PPR':'Max','Proj':'Projected'})
-        top_teams["Flag"] = top_teams["Short"].apply(to_file_url)
+        top_teams["Flag"] = top_teams["Short"].apply(as_data_uri)
         st.container()
         st.dataframe(top_teams.drop(columns='Short'), height=250, hide_index=True,column_config=column_config)
         st.write(top_teams["Flag"].apply(type).value_counts())
