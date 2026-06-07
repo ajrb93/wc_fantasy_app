@@ -69,6 +69,7 @@ with tab_fantasy:
         for i, manager in enumerate(ordered_managers):
             player_detail = selected_standings[selected_standings.Person == manager][['Flag','Country','Short','Group','Points','PPR','Proj','Uniqueness']].rename(
                 columns={'PPR':'Max','Proj':'Projected'})
+            player_detail.Uniqueness *= 100
             player_detail["Flag"] = player_detail["Short"].apply(as_data_uri)
             pts_val = selected_standings[selected_standings.Person == manager].Points.sum()
             proj_val = selected_standings[selected_standings.Person == manager].Proj.sum()
