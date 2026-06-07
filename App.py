@@ -118,7 +118,8 @@ with tab_tournament:
                               use_container_width=True, hide_index=True,column_config=column_config)
     with col2:
         st.markdown("### Knockouts")
-        knockout_detail = standings[['Country','Short','PPR','Proj','32','16','QF','SF','Final','Win']]
+        knockout_detail = standings[['Flag','Country','Short','PPR','Proj','32','16','QF','SF','Final','Win']].sort_values('Proj',ascending=False).rename(
+            columns={'Proj':'Projected'})
         knockout_detail["Flag"] = knockout_detail["Short"].apply(as_data_uri)
         knockout_detail['32'] *= 100
         knockout_detail['16'] *= 100
