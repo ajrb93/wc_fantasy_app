@@ -96,5 +96,5 @@ with tab_fantasy:
                     (player_detail[" "] == "")]
 
         st.write(bad)
-        st.write(type(player_detail["Flag"].iloc[0]))
-        st.write(len(player_detail["Flag"].iloc[0]))
+        st.write(type(player_detail[" "].iloc[0]))
+        st.write(len(player_detail[" "].iloc[0]))
