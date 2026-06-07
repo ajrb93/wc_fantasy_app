@@ -56,19 +56,23 @@ with tab_fantasy:
         st.markdown("### Standings - Detail")
         ordered_managers = player_standings['Person'].tolist()
         for i, manager in enumerate(ordered_managers):
-            player_detail = selected_standings[selected_standings.Person == manager][[' ','Country','Group','Points','PPR','Proj','Uniqueness']].rename(
+            player_detail = selected_standings[selected_standings.Person == manager][[' ','Country','Short','Group','Points','PPR','Proj','Uniqueness']].rename(
                 columns={'PPR':'Max','Proj':'Projected'})
+            player_detail[" "] = player_detail["Country_Short"].apply(lambda x: f"data/flags/{x}.png")
             pts_val = selected_standings[selected_standings.Person == manager].Points.sum()
             proj_val = selected_standings[selected_standings.Person == manager].Proj.sum()
             leader_icon = "🥇 " if i == 0 else "🥈 " if i == 1 else "🥉 " if i == 2 else ""
             with st.expander(f"{leader_icon}{manager} | {pts_val:.0f} points | {proj_val:.1f} projected", expanded=False):
-                st.dataframe(player_detail.style.format(fmt_dict), use_container_width=False, hide_index=True,width = "content")
+                st.dataframe(player_detail.drop(columns='Short').style.format(fmt_dict), use_container_width=False, hide_index=True,width = "content",column_config=
+                             {" ": st.column_config.ImageColumn(" ",help="Country flag")})
 
     with col3:
         st.markdown('### Standings Over Time')
         st.markdown('To come')
 
         st.markdown("### Top Teams")
-        top_teams = standings.sort_values(['Points','Proj'],ascending=False)[[' ','Country','Group','Points','PPR','Proj','W','D','L','GD']].rename(
+        top_teams = standings.sort_values(['Points','Proj'],ascending=False)[[' ','Country','Short','Group','Points','PPR','Proj','W','D','L','GD']].rename(
             columns={'PPR':'Max','Proj':'Projected'})
-        st.dataframe(top_teams.style.format(fmt_dict), height=250, use_container_width=True, hide_index=True,width = "content")
+        top_teams[" "] = top_teams["Short"].apply(lambda x: f"data/flags/{x}.png")
+        st.dataframe(top_teams.drop(columns='Short').style.format(fmt_dict), height=250, use_container_width=True, hide_index=True,width = "content",column_config=
+                             {" ": st.column_config.ImageColumn(" ",help="Country flag")})
