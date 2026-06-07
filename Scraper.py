@@ -10,7 +10,8 @@ selections = {'Steph S':['France','Colombia','Australia','Canada','South Africa'
               'Geoff T':['France','Germany','Switzerland','Norway','Scotland','Saudi Arabia'],
               'Caity H':['France','Mexico','Australia','Ivory Coast','South Africa','Ghana'],
               'Laura B':['Spain','Belgium','Switzerland','Norway','Scotland','Ghana'],
-              'Jessie DB':['France','Germany','Iran','Norway','Tunisia','Curaçao']}
+              'Jessie DB':['France','Germany','Iran','Norway','Tunisia','Curaçao'],
+              'AJ B':['Spain','Mexico','Switzerland','Canada','Czechia','Bosnia-Herzegovina']}
 selections = pd.DataFrame(selections).T
 selections = selections.reset_index().rename(columns={'index':'Person'}).melt(id_vars='Person',var_name='pot',value_name='Country')
 selections.pot += 1
