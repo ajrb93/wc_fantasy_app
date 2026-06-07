@@ -85,3 +85,6 @@ with tab_fantasy:
             columns={'PPR':'Max','Proj':'Projected'})
         top_teams[" "] = top_teams["Short"].apply(lambda x: f"data/flags/{x}.png")
         st.dataframe(top_teams.drop(columns='Short'), height=250, use_container_width=True, hide_index=True,width = "content",column_config=column_config)
+        st.write(player_detail[" "].head())
+        st.image(player_detail[" "].iloc[0])
+        st.write(st.__version__)
