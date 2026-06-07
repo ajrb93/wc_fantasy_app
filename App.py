@@ -64,7 +64,7 @@ with tab_fantasy:
         for i, manager in enumerate(ordered_managers):
             player_detail = selected_standings[selected_standings.Person == manager][['Flag','Country','Short','Group','Points','PPR','Proj','Uniqueness']].rename(
                 columns={'PPR':'Max','Proj':'Projected'})
-            player_detail["Flag"] = player_detail["Short"].apply(load_img_bytes)
+            player_detail["Flag"] = player_detail["Short"].apply(lambda x: str(BASE_DIR / "data" / "flags" / f"{x}.png"))
             pts_val = selected_standings[selected_standings.Person == manager].Points.sum()
             proj_val = selected_standings[selected_standings.Person == manager].Proj.sum()
             leader_icon = "🥇 " if i == 0 else "🥈 " if i == 1 else "🥉 " if i == 2 else ""
@@ -89,10 +89,6 @@ with tab_fantasy:
         st.markdown("### Top Teams")
         top_teams = standings.sort_values(['Points','Proj'],ascending=False)[['Flag','Country','Short','Group','Points','PPR','Proj','W','D','L','GD']].rename(
             columns={'PPR':'Max','Proj':'Projected'})
-        top_teams["Flag"] = top_teams["Short"].apply(load_img_bytes)
+        top_teams["Flag"] = top_teams["Short"].apply(lambda x: str(BASE_DIR / "data" / "flags" / f"{x}.png"))
         st.dataframe(top_teams.drop(columns='Short'), height=250, use_container_width=True, hide_index=True,width = "content",column_config=column_config)
-        st.write(player_detail["Flag"].apply(type).value_counts())
-        st.write(column_config)
-        st.write(column_config.keys())
-        st.write(player_detail.columns.tolist())
-        st.write(type(player_detail["Flag"].iloc[0]))
+        st.write(top_teams["Flag"].apply(type).value_counts())
