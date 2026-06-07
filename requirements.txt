@@ -6,3 +6,4 @@ matplotlib
 plotly
 streamlit-aggrid
 requests
+pathlib

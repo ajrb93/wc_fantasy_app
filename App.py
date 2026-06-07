@@ -1,6 +1,7 @@
 import streamlit as st
 import matplotlib
 import pandas as pd
+from pathlib import Path
 
 # --- 1. CONFIG & COMPACT STYLING ---
 st.set_page_config(layout="wide", page_title="World Cup Fantasy")
@@ -33,6 +34,10 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
+BASE_DIR = Path(__file__).parent
+def load_img_bytes(code):
+    path = BASE_DIR / "data" / "flags" / f"{code}.png"
+    return path.read_bytes()
 
 standings = pd.read_feather('data/standings.ftr')
 selected_standings = pd.read_feather('data/selected_standings.ftr')
@@ -58,11 +63,11 @@ with tab_fantasy:
         for i, manager in enumerate(ordered_managers):
             player_detail = selected_standings[selected_standings.Person == manager][[' ','Country','Short','Group','Points','PPR','Proj','Uniqueness']].rename(
                 columns={'PPR':'Max','Proj':'Projected'})
-            player_detail[" "] = player_detail["Short"].apply(lambda x: f"data/flags/{x}.png")
+            player_detail[" "] = player_detail["Short"].apply(load_img_bytes)
             pts_val = selected_standings[selected_standings.Person == manager].Points.sum()
             proj_val = selected_standings[selected_standings.Person == manager].Proj.sum()
             leader_icon = "🥇 " if i == 0 else "🥈 " if i == 1 else "🥉 " if i == 2 else ""
-            column_config = {" ": st.column_config.ImageColumn(" ",help="Country flag")}
+            column_config = {" ": st.column_config.ImageColumn(" ")}
             for col, fmt in fmt_dict.items():
                 if fmt == "{:.0f}":
                     column_config[col] = st.column_config.NumberColumn(col,format="%.0f")
@@ -83,12 +88,5 @@ with tab_fantasy:
         st.markdown("### Top Teams")
         top_teams = standings.sort_values(['Points','Proj'],ascending=False)[[' ','Country','Short','Group','Points','PPR','Proj','W','D','L','GD']].rename(
             columns={'PPR':'Max','Proj':'Projected'})
-        top_teams[" "] = top_teams["Short"].apply(lambda x: f"data/flags/{x}.png")
+        top_teams[" "] = top_teams["Short"].apply(load_img_bytes)
         st.dataframe(top_teams.drop(columns='Short'), height=250, use_container_width=True, hide_index=True,width = "content",column_config=column_config)
-        st.write(player_detail[" "].head())
-        st.image(player_detail[" "].iloc[0])
-        st.write(st.__version__)
-        st.write(player_detail[" "].head())
-        st.write(player_detail[" "].dtype)
-        test_df = pd.DataFrame({"Flag": [player_detail[" "].iloc[0]]})
-        st.dataframe(test_df,column_config={"Flag": st.column_config.ImageColumn("Flag")})
