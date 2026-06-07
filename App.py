@@ -91,5 +91,5 @@ with tab_fantasy:
             columns={'PPR':'Max','Proj':'Projected'})
         top_teams[" "] = top_teams["Short"].apply(load_img_bytes)
         st.dataframe(top_teams.drop(columns='Short'), height=250, use_container_width=True, hide_index=True,width = "content",column_config=column_config)
-        st.write(player_detail["Flag"].apply(type).value_counts())
+        st.write(player_detail[" "].apply(type).value_counts())
         st.write(fmt_dict)
