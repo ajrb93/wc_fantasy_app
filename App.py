@@ -88,3 +88,7 @@ with tab_fantasy:
         st.write(player_detail[" "].head())
         st.image(player_detail[" "].iloc[0])
         st.write(st.__version__)
+        st.write(player_detail[" "].head())
+        st.write(player_detail[" "].dtype)
+        test_df = pd.DataFrame({"Flag": [player_detail[" "].iloc[0]]})
+        st.dataframe(test_df,column_config={"Flag": st.column_config.ImageColumn("Flag")})
