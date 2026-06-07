@@ -98,3 +98,15 @@ with tab_fantasy:
         top_teams["Flag"] = top_teams["Short"].apply(as_data_uri)
         st.container()
         st.dataframe(top_teams.drop(columns='Short'), height=250, hide_index=True,column_config=column_config,use_container_width=False,width = "content")
+
+with tab_tournament:
+    col1, col2 = st.columns([1,1])
+    with col1:
+        st.markdown("### Group Stage")
+        ordered_groups = ['A','B','C','D','E','F','G','H','I','J','K','L']
+        for i, group in enumerate(ordered_groups):
+            team_detail = standings[standings.Group == group][['Flag','Country','W','D','L','GF','GA','GD','Points','PPR','Proj','1st','2nd','3rd','4th'
+                                                               ]].sort_values(['Points','GD','GF'],ascending=False).rename(columns={'PPR':'Max','Proj':'Projected'})
+            with st.expander(f"{leader_icon}{manager} | {pts_val:.0f} points | {proj_val:.1f} projected", expanded=False):
+                st.dataframe(player_detail.drop(columns='Short'), use_container_width=True, hide_index=True,column_config=column_config)
+
