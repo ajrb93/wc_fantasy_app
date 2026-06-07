@@ -92,3 +92,5 @@ with tab_fantasy:
         top_teams["Flag"] = top_teams["Short"].apply(lambda x: str(BASE_DIR / "data" / "flags" / f"{x}.png"))
         st.dataframe(top_teams.drop(columns='Short'), height=250, use_container_width=True, hide_index=True,width = "content",column_config=column_config)
         st.write(top_teams["Flag"].apply(type).value_counts())
+        st.write(player_detail["Flag"].iloc[0])
+        st.image(player_detail["Flag"].iloc[0]) 
