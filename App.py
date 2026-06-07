@@ -119,7 +119,7 @@ with tab_tournament:
     with col2:
         st.markdown("### Knockouts")
         knockout_detail = standings[['Flag','Country','Short','PPR','Proj','32','16','QF','SF','Final','Win']].sort_values('Proj',ascending=False).rename(
-            columns={'Proj':'Projected'})
+            columns={'Proj':'Projected','PPR':'Max'})
         knockout_detail["Flag"] = knockout_detail["Short"].apply(as_data_uri)
         knockout_detail['32'] *= 100
         knockout_detail['16'] *= 100
