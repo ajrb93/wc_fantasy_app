@@ -105,8 +105,9 @@ with tab_tournament:
         st.markdown("### Group Stage")
         ordered_groups = ['A','B','C','D','E','F','G','H','I','J','K','L']
         for i, group in enumerate(ordered_groups):
-            team_detail = standings[standings.Group == group][['Flag','Country','W','D','L','GF','GA','GD','Points','PPR','Proj','1st','2nd','3rd','4th'
+            team_detail = standings[standings.Group == group][['Flag','Country','Short','W','D','L','GF','GA','GD','Points','PPR','Proj','1st','2nd','3rd','4th'
                                                                ]].sort_values(['Points','GD','GF'],ascending=False).rename(columns={'PPR':'Max','Proj':'Projected'})
-            with st.expander(f"{leader_icon}{manager} | {pts_val:.0f} points | {proj_val:.1f} projected", expanded=False):
-                st.dataframe(player_detail.drop(columns='Short'), use_container_width=True, hide_index=True,column_config=column_config)
+            team_detail["Flag"] = team_detail["Short"].apply(as_data_uri)
+            with st.expander(f"{group}",expanded=False):
+                st.dataframe(team_detail.drop(columns='Short'), use_container_width=True, hide_index=True,column_config=column_config)
 
