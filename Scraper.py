@@ -6,7 +6,16 @@ selections = {'Steph S':['France','Colombia','Australia','Canada','South Africa'
               'Yasmin S':['Argentina','Germany','Japan','Norway','Scotland','Ghana'],
               'Gavin F':['Argentina','Belgium','Ecuador','Canada','Scotland','Ghana'],
               'Matt C':['France','Germany','Turkey','Norway','Czechia','Bosnia-Herzegovina'],
-              'Tim C':['France','Germany','Japan','Norway','Czechia','Bosnia-Herzegovina']}
+              'Tim C':['France','Germany','Japan','Norway','Czechia','Bosnia-Herzegovina'],
+              'Geoff T':['France','Germany','Switzerland','Norway','Scotland','Saudi Arabia'],
+              'Caity H':['France','Mexico','Australia','Ivory Coast','South Africa','Ghana'],
+              'Laura B':['Spain','Belgium','Switzerland','Norway','Scotland','Ghana'],
+              'Jessie DB':['France','Germany','Iran','Norway','Tunisia','Curaçao']}
+selections = pd.DataFrame(selections).T
+selections = selections.reset_index().rename(columns={'index':'Person'}).melt(id_vars='Person',var_name='pot',value_name='Country')
+selections.pot += 1
+selections = selections.merge(selections.groupby('Country').Person.count().reset_index().rename(columns={'Person':'Count'}))
+selections['Uniqueness'] = 1 - (selections['Count'] - 1) / (selections.Person.nunique() - 1)
 selections = pd.DataFrame(selections).T
 selections = selections.reset_index().rename(columns={'index':'Person'}).melt(id_vars='Person',var_name='pot',value_name='Country')
 selections.pot += 1
