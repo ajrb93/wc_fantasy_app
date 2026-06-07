@@ -49,7 +49,7 @@ standings = pd.read_feather('data/standings.ftr').rename(columns={' ':'Flag'})
 selected_standings = pd.read_feather('data/selected_standings.ftr').rename(columns={' ':'Flag'})
 
 fmt_dict = {'Points': '{:.0f}', 'Max': '{:.0f}', 'Projected': '{:.1f}','Uniqueness':'{:0.1%}','W':'{:.0f}','D':'{:.0f}','L':'{:.0f}',
-            'GF':'{:.0f}','GA':'{:.0f}','Points':'{:.0f}','1st':'{:0.2%}','2nd':'{:0.2%}','3rd':'{:0.2%}','4th':'{:0.2%}'}
+            'GF':'{:.0f}','GA':'{:.0f}','Points':'{:.0f}','1st':'{:0.0%}','2nd':'{:0.0%}','3rd':'{:0.0%}','4th':'{:0.0%}'}
 
 
 tab_fantasy, tab_tournament, tab_selections = st.tabs([f"🏆 Fantasy Results", "Team Results","Selections"])
@@ -82,8 +82,8 @@ with tab_fantasy:
                     column_config[col] = st.column_config.NumberColumn(col,format="%.1f")
                 elif fmt == "{:0.1%}":
                     column_config[col] = st.column_config.NumberColumn(col,format="%.1f%%")
-                elif fmt == "{:0.2%}":
-                    column_config[col] = st.column_config.NumberColumn(col,format="%.2f%%")
+                elif fmt == "{:0.0%}":
+                    column_config[col] = st.column_config.NumberColumn(col,format="%.0f%%")
 
             with st.expander(f"{leader_icon}{manager} | {pts_val:.0f} points | {proj_val:.1f} projected", expanded=False):
                 st.dataframe(player_detail.drop(columns='Short'), use_container_width=True, hide_index=True,column_config=column_config)
@@ -108,6 +108,10 @@ with tab_tournament:
             team_detail = standings[standings.Group == group][['Flag','Country','Short','W','D','L','GF','GA','GD','Points','PPR','Proj','1st','2nd','3rd','4th'
                                                                ]].sort_values(['Points','GD','GF'],ascending=False).rename(columns={'PPR':'Max','Proj':'Projected'})
             team_detail["Flag"] = team_detail["Short"].apply(as_data_uri)
+            team_detail['1st'] *= 100
+            team_detail['2nd'] *= 100
+            team_detail['3rd'] *= 100
+            team_detail['4th'] *= 100
             with st.expander(f"{group}",expanded=False):
                 st.dataframe(team_detail.drop(columns='Short'), use_container_width=True, hide_index=True,column_config=column_config)
 
