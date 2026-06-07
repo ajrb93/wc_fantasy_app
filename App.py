@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
 
 # --- 1. CONFIG & COMPACT STYLING ---
 st.set_page_config(layout="wide", page_title="World Cup Fantasy")
