@@ -1,4 +1,5 @@
 import streamlit as st
+import matplotlib
 import pandas as pd
 
 # --- 1. CONFIG & COMPACT STYLING ---
