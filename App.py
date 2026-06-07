@@ -37,14 +37,14 @@ st.markdown("""
 standings = pd.read_feather('data/standings.ftr')
 selected_standings = pd.read_feather('data/selected_standings.ftr')
 
-fmt_dict = {'Points': '{:.0f}', 'Max': '{:.0f}', 'Projected': '{:.1f}','Uniqueness':'{:0.2%}','W':'{:.0f}','D':'{:.0f}','L':'{:.0f}',
+fmt_dict = {'Points': '{:.0f}', 'Max': '{:.0f}', 'Projected': '{:.1f}','Uniqueness':'{:0.1%}','W':'{:.0f}','D':'{:.0f}','L':'{:.0f}',
             'GF':'{:.0f}','GA':'{:.0f}','Points':'{:.0f}','1st':'{:0.2%}','2nd':'{:0.2%}','3rd':'{:0.2%}','4th':'{:0.2%}'}
 
 
 tab_fantasy, tab_tournament, tab_selections = st.tabs([f"🏆 Fantasy Results", "Team Results","Selections"])
 
 with tab_fantasy:
-    col1, col2, col3 = st.columns([1,1,1])
+    col1, col2, col3 = st.columns([2/3,1,1])
     with col1:
         st.markdown("### Standings")
         player_standings = selected_standings.groupby('Person').agg({'Points':'sum','PPR':'sum','Proj':'sum','Uniqueness':'mean'}).sort_values(
@@ -58,11 +58,11 @@ with tab_fantasy:
         for i, manager in enumerate(ordered_managers):
             player_detail = selected_standings[selected_standings.Person == manager][[' ','Country','Group','Points','PPR','Proj','Uniqueness']].rename(
                 columns={'PPR':'Max','Proj':'Projected'})
-            pts_val = selected_standings[selected_standings.Person == manager].Points
-            proj_val = selected_standings[selected_standings.Person == manager].Proj
+            pts_val = selected_standings[selected_standings.Person == manager].Points.sum()
+            proj_val = selected_standings[selected_standings.Person == manager].Proj.sum()
             leader_icon = "🥇 " if i == 0 else "🥈 " if i == 1 else "🥉 " if i == 2 else ""
             with st.expander(f"{leader_icon}{manager} | {pts_val:.0f} points | {proj_val:.1f} projected", expanded=False):
-                st.dataframe(player_detail.style.format(fmt_dict), use_container_width=True, hide_index=True,width = "content")
+                st.dataframe(player_detail.style.format(fmt_dict), use_container_width=False, hide_index=True,width = "content")
 
     with col3:
         st.markdown('### Standings Over Time')
