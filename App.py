@@ -33,7 +33,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 
-standings = pd.read_feather('data/standing.ftr')
+standings = pd.read_feather('data/standings.ftr')
 selected_standings = pd.read_feather('data/selected_standings.ftr')
 
 fmt_dict = {'Points': '{:.0f}', 'Max': '{:.0f}', 'Projected': '{:.1f}','Uniqueness':'{:0.2%}','W':'{:.0f}','D':'{:.0f}','L':'{:.0f}',
