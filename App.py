@@ -100,7 +100,7 @@ with tab_fantasy:
         st.dataframe(top_teams.drop(columns='Short'), height=250, hide_index=True,column_config=column_config,use_container_width=False,width = "content")
 
 with tab_tournament:
-    col1, col2 = st.columns([1.2,1])
+    col1, col2 = st.columns([1.3,1])
     with col1:
         st.markdown("### Group Stage")
         ordered_groups = ['A','B','C','D','E','F','G','H','I','J','K','L']
