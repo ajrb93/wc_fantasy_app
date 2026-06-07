@@ -8,4 +8,3 @@ streamlit-aggrid
 requests
 pathlib
 Pillow
-base64

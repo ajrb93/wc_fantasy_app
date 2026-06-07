@@ -96,7 +96,7 @@ with tab_fantasy:
             columns={'PPR':'Max','Proj':'Projected'})
         top_teams["Flag"] = top_teams["Short"].apply(as_data_uri)
         st.container()
-        st.dataframe(top_teams.drop(columns='Short'), height=250, hide_index=True,column_config=column_config)
+        st.dataframe(top_teams.drop(columns='Short'), height=250, hide_index=True,column_config=column_config,use_container_width=False,width = "content")
         st.write(top_teams["Flag"].apply(type).value_counts())
         st.image(player_detail["Flag"].iloc[0]) 
         st.write(player_detail["Flag"].iloc[0])
