@@ -105,13 +105,14 @@ with tab_tournament:
         st.markdown("### Group Stage")
         ordered_groups = ['A','B','C','D','E','F','G','H','I','J','K','L']
         for i, group in enumerate(ordered_groups):
-            team_detail = standings[standings.Group == group][['Flag','Country','Short','W','D','L','GF','GA','GD','Points','PPR','Proj','1st','2nd','3rd','4th'
-                                                               ]].sort_values(['Points','GD','GF','Proj'],ascending=False).rename(columns={'PPR':'Max','Proj':'Projected'})
+            team_detail = standings[standings.Group == group][['Flag','Country','Short','W','D','L','GF','GA','GD','Points','Proj','1st','2nd','3rd','4th'
+                                                               ]].sort_values(['Points','GD','GF','Proj'],ascending=False).rename(columns={'Proj':'Projected'})
             team_detail["Flag"] = team_detail["Short"].apply(as_data_uri)
             team_detail['1st'] *= 100
             team_detail['2nd'] *= 100
             team_detail['3rd'] *= 100
             team_detail['4th'] *= 100
             with st.expander(f"{group}",expanded=False):
-                st.dataframe(team_detail.drop(columns='Short'), use_container_width=True, hide_index=True,column_config=column_config)
+                st.dataframe(team_detail.drop(columns='Short').background_gradient(cmap='RdYlGn', subset=['Points']),
+                              use_container_width=True, hide_index=True,column_config=column_config)
 
