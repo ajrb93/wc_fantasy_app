@@ -49,7 +49,8 @@ standings = pd.read_feather('data/standings.ftr').rename(columns={' ':'Flag'})
 selected_standings = pd.read_feather('data/selected_standings.ftr').rename(columns={' ':'Flag'})
 
 fmt_dict = {'Points': '{:.0f}', 'Max': '{:.0f}', 'Projected': '{:.1f}','Uniqueness':'{:0.1%}','W':'{:.0f}','D':'{:.0f}','L':'{:.0f}',
-            'GF':'{:.0f}','GA':'{:.0f}','Points':'{:.0f}','1st':'{:0.0%}','2nd':'{:0.0%}','3rd':'{:0.0%}','4th':'{:0.0%}'}
+            'GF':'{:.0f}','GA':'{:.0f}','Points':'{:.0f}','1st':'{:0.0%}','2nd':'{:0.0%}','3rd':'{:0.0%}','4th':'{:0.0%}',
+            '32':'{:0.0%}','16':'{:0.0%}','QF':'{:0.0%}','SF':'{:0.0%}','Final':'{:0.0%}','Win':'{:0.0%}'}
 
 
 tab_fantasy, tab_tournament, tab_selections = st.tabs([f"🏆 Fantasy Results", "Team Results","Selections"])
@@ -100,7 +101,7 @@ with tab_fantasy:
         st.dataframe(top_teams.drop(columns='Short'), height=250, hide_index=True,column_config=column_config,use_container_width=False,width = "content")
 
 with tab_tournament:
-    col1, col2 = st.columns([1.3,1])
+    col1, col2 = st.columns([1.35,1])
     with col1:
         st.markdown("### Group Stage")
         ordered_groups = ['A','B','C','D','E','F','G','H','I','J','K','L']
@@ -115,4 +116,15 @@ with tab_tournament:
             with st.expander(f"{group}",expanded=False):
                 st.dataframe(team_detail.drop(columns='Short').style.background_gradient(cmap='RdYlGn', subset=['1st', '2nd', '3rd', '4th'], vmin=0, vmax=100),
                               use_container_width=True, hide_index=True,column_config=column_config)
-
+    with col2:
+        st.markdown("### Knockouts")
+        knockout_detail = standings[['Country','Short','PPR','Proj','32','16','QF','SF','Final','Win']]
+        knockout_detail["Flag"] = knockout_detail["Short"].apply(as_data_uri)
+        knockout_detail['32'] *= 100
+        knockout_detail['16'] *= 100
+        knockout_detail['QF'] *= 100
+        knockout_detail['SF'] *= 100
+        knockout_detail['Final'] *= 100
+        knockout_detail['Win'] *= 100
+        st.dataframe(knockout_detail.drop(columns='Short').style.background_gradient(cmap='RdYlGn', subset=['32', '16', 'QF', 'SF','Final','Win'], vmin=0, vmax=100),
+                              use_container_width=True, hide_index=True,column_config=column_config)
