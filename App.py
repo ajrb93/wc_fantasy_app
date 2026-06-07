@@ -2,6 +2,7 @@ import streamlit as st
 import matplotlib
 import pandas as pd
 from pathlib import Path
+from PIL import Image
 
 # --- 1. CONFIG & COMPACT STYLING ---
 st.set_page_config(layout="wide", page_title="World Cup Fantasy")
@@ -37,7 +38,7 @@ st.markdown("""
 BASE_DIR = Path(__file__).parent
 def load_img_bytes(code):
     path = BASE_DIR / "data" / "flags" / f"{code}.png"
-    return path.read_bytes()
+    return Image.open(path).convert("RGBA")
 
 standings = pd.read_feather('data/standings.ftr')
 selected_standings = pd.read_feather('data/selected_standings.ftr')
@@ -89,4 +90,6 @@ with tab_fantasy:
         top_teams = standings.sort_values(['Points','Proj'],ascending=False)[[' ','Country','Short','Group','Points','PPR','Proj','W','D','L','GD']].rename(
             columns={'PPR':'Max','Proj':'Projected'})
         top_teams[" "] = top_teams["Short"].apply(load_img_bytes)
-        st.data_editor(top_teams.drop(columns='Short'), height=250, use_container_width=True, hide_index=True,width = "content",column_config=column_config)
+        st.dataframe(top_teams.drop(columns='Short'), height=250, use_container_width=True, hide_index=True,width = "content",column_config=column_config)
+        st.write(player_detail["Flag"].apply(type).value_counts())
+        st.write(fmt_dict)
