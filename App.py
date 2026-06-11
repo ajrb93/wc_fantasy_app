@@ -62,7 +62,7 @@ with tab_fantasy:
         player_standings = selected_standings.groupby('Person').agg({'Points':'sum','PPR':'sum','Proj':'sum','Uniqueness':'mean'}).sort_values(
             ['Points','Proj'],ascending=False).rename(columns={'PPR':'Max','Proj':'Projected'}).reset_index()
         st.dataframe(player_standings.style.format(fmt_dict).background_gradient(cmap='RdYlGn', subset=['Points']), 
-                        hide_index=True, use_container_width=True, height=480)
+                        hide_index=True, use_container_width=True, height=550)
         
     with col2:
         st.markdown("### Standings - Detail")
@@ -131,4 +131,4 @@ with tab_tournament:
                               use_container_width=True, hide_index=True,column_config=column_config)
         
 with tab_selections:
-    pass
+    st.markdown('## Coming soon')
