@@ -12,7 +12,18 @@ selections = {'Steph N':['Spain','Germany','Switzerland','Norway','Czechia','Bos
               'Nicole G':['England','Germany','Switzerland','Norway','Czechia','Ghana'],
               'Agustin D':['Argentina','Germany','Japan','Canada','Scotland','Bosnia-Herzegovina'],
               'Mika S':['Argentina','Belgium','Japan','Canada','Tunisia','New Zealand'],
-              'AJ B':['Spain','Mexico','Switzerland','Canada','Czechia','Bosnia-Herzegovina']
+              'AJ B':['Spain','Mexico','Switzerland','Canada','Czechia','Bosnia-Herzegovina'],
+              'Rania C':['Spain','Colombia','Japan','Ivory Coast','Scotland','Saudi Arabia'],
+              'Ovidiu C':['Brazil','Germany','Austria','Sweden','Scotland','Bosnia-Herzegovina'],
+              'Marcelo K':['France','Germany','Switzerland','Paraguay','Scotland','New Zealand'],
+              'Saloni G':['Spain','Germany','Japan','Norway','Scotland','Ghana'],
+              'Ayrton FdS':['Argentina','Croatia','Japan','Sweden','Scotland','Ghana'],
+              'Patricia Rhymer':['Portugal','Germany','Australia','Paraguay','Czechia','New Zealand'],
+              'Kirby L':['Spain','Germany','Japan','Sweden','Scotland','New Zealand'],
+              'Raphael dA':['Brazil','Colombia','Ecuador','Norway','Congo DR','Curaçao'],
+              'Andrew P':['England','Colombia','Switzerland','Paraguay','Scotland','Ghana'],
+              'Miranda H':['France','Germany','Japan','Norway','Czechia','Ghana'],
+              'Ana dA':['Spain','Germany','Switzerland','Canada','Uzbekistan','Ghana']
               }
 selections = pd.DataFrame(selections).T
 selections = selections.reset_index().rename(columns={'index':'Person'}).melt(id_vars='Person',var_name='pot',value_name='Country')
