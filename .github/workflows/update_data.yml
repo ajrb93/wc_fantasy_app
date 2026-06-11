@@ -26,7 +26,8 @@ jobs:
           playwright install-deps chromium
 
       - name: Run Scraper
-        run: python Scraper.py
+        run: |
+             python Scraper.py
              python Scraper2.py
 
       - name: Commit and Push Dynamic Data
