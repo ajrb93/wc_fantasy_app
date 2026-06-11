@@ -27,6 +27,7 @@ jobs:
 
       - name: Run Scraper
         run: python Scraper.py
+             python Scraper2.py
 
       - name: Commit and Push Dynamic Data
         run: |
