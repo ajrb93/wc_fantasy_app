@@ -83,7 +83,7 @@ preds[['loss','tie','win','0']] = preds['value'].apply(pd.Series)
 preds = preds.drop(columns=['0','value']).dropna().rename(columns={'index':'Home Team','variable':'Away Team'})
 fixtures = fixtures.merge(preds,how='left')
 fixtures = pd.concat((fixtures,matches_regular[~matches_regular.Home_Score.isna()][['Home_Score','Away_Score','Home_Win','Away_Win','Draw']]),axis=1)
-fixtures.loc[~fixtures.Home_Score.isna(),'Result'] = True
+fixtures.loc[~fixtures.Home_Score.isna(),'Result'] = 1
 
 paths = pd.read_json('https://dtai.cs.kuleuven.be/sports/worldcup2026/data/data.json?v=1')
 odds = []
@@ -117,7 +117,7 @@ standings['L'] = 0
 standings['GF'] = 0
 standings['GA'] = 0
 standings['GD'] = 0
-standings['Proj'] = 0
+standings['Proj'] = 0.0
 standings['PPR'] = 0
 standings['Points'] = 0
 
