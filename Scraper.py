@@ -50,11 +50,40 @@ names = {'MEX':'Mexico','RSA':'South Africa','KOR':'South Korea','CZE':'Czechia'
 groups = pd.DataFrame(groups).T.reset_index().rename(columns={'index':'Group'}).melt(id_vars='Group',value_name='Short').drop(columns='variable')
 groups['Country'] = groups.Short.replace(names)
 
+import requests
+
+API_KEY = "1d042d223fa447cf863e6e820aa3d96a"
+
+r = requests.get(
+    "https://api.football-data.org/v4/competitions/WC/matches",
+    headers={"X-Auth-Token": API_KEY})
+
+matches = []
+for i in range(0,len(r.json()['matches'])):
+    temp = r.json()['matches'][i]
+    date = temp['utcDate']
+    stage = temp['stage']
+    home_team = temp['homeTeam']['name']
+    away_team = temp['awayTeam']['name']
+    home_score = temp['score']['fullTime']['home']
+    away_score = temp['score']['fullTime']['away']
+    matches.append([date,stage,home_team,away_team,home_score,away_score])
+matches = pd.DataFrame(matches,columns=['Date','Stage','Home','Away','Home_Score','Away_Score'])
+matches.iloc[0].Home_Score = 3
+matches.iloc[0].Away_Score = 1
+matches['Home_Win'] = (matches.Home_Score > matches.Away_Score).astype('int')
+matches['Away_Win'] = (matches.Home_Score < matches.Away_Score).astype('int')
+matches['Draw'] = (matches.Home_Score == matches.Away_Score).astype('int')
+matches_regular = matches[matches.Stage == 'GROUP_STAGE']
+matches_playoff = matches[matches.Stage != 'GROUP_STAGE']
+
 fixtures = pd.read_csv('https://dtai.cs.kuleuven.be/sports/worldcup2026/data/fixtures.csv?v=1')
 preds = pd.read_json('https://dtai.cs.kuleuven.be/sports/worldcup2026/data/predictions.json?v=1').reset_index().melt(id_vars='index')
 preds[['loss','tie','win','0']] = preds['value'].apply(pd.Series)
 preds = preds.drop(columns=['0','value']).dropna().rename(columns={'index':'Home Team','variable':'Away Team'})
 fixtures = fixtures.merge(preds,how='left')
+fixtures = pd.concat((fixtures,matches_regular[~matches_regular.Home_Score.isna()][['Home_Score','Away_Score','Home_Win','Away_Win','Draw']]),axis=1)
+fixtures.loc[~fixtures.Home_Score.isna(),'Result'] = True
 
 paths = pd.read_json('https://dtai.cs.kuleuven.be/sports/worldcup2026/data/data.json?v=1')
 odds = []
@@ -99,8 +128,17 @@ planned = planned[~planned.Group.isna()]
 
 for match in range(0,len(results)):
     temp = results.iloc[match]
-    pass
-    #AJ to build once result format is known
+    standings.loc[standings.Short == temp['Home Team'],'W'] = standings.W + temp.Home_Win
+    standings.loc[standings.Short == temp['Home Team'],'D'] = standings.D + temp.Draw
+    standings.loc[standings.Short == temp['Home Team'],'L'] = standings.L + temp.Away_Win
+    standings.loc[standings.Short == temp['Home Team'],'GF'] = standings.GF + temp.Home_Score
+    standings.loc[standings.Short == temp['Home Team'],'GA'] = standings.GA + temp.Away_Score
+
+    standings.loc[standings.Short == temp['Away Team'],'W'] = standings.W + temp.Away_Win
+    standings.loc[standings.Short == temp['Away Team'],'D'] = standings.D + temp.Draw
+    standings.loc[standings.Short == temp['Away Team'],'L'] = standings.L + temp.Home_Win
+    standings.loc[standings.Short == temp['Away Team'],'GF'] = standings.GF + temp.Away_Score
+    standings.loc[standings.Short == temp['Away Team'],'GA'] = standings.GA + temp.Home_Score
 
 for match in range(0,len(planned)):
     temp = planned.iloc[match]
@@ -118,6 +156,8 @@ for team in range(0,len(odds)):
         standings.loc[standings.Short == temp.name,'PPR'] = standings.PPR + (len(temp[temp > 0]) - len(temp[temp >= 1]) - 1) * 5
         #AJ to check once in knockouts but this should work
 
+standings.GD = standings.GF - standings.GA
+standings.Points = standings.W * 3 + standings.D * 1
 standings.Proj += standings.Points
 standings = standings.merge(odds_group,how='left',left_on='Short',right_index=True).merge(
     odds.drop(columns=[1]).rename(columns={2:'32',3:'16',4:'QF',5:'SF',6:'Final',7:'Win'}),how='left',left_on='Short',right_index=True).fillna(0)
