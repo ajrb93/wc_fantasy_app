@@ -21,7 +21,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pip install pandas numpy beautifulsoup4 playwright lxml pyarrow matplotlib
+          pip install pandas numpy beautifulsoup4 playwright lxml pyarrow matplotlib requests
           playwright install chromium
           playwright install-deps chromium
 
