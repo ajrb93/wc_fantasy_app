@@ -84,6 +84,8 @@ matches.iloc[0].Away_Score = 1
 matches['Home_Win'] = (matches.Home_Score > matches.Away_Score).astype('int')
 matches['Away_Win'] = (matches.Home_Score < matches.Away_Score).astype('int')
 matches['Draw'] = (matches.Home_Score == matches.Away_Score).astype('int')
+matches.Home = matches.Home.replace({v: k for k, v in names.items()})
+matches.Away = matches.Away.replace({v: k for k, v in names.items()})
 matches_regular = matches[matches.Stage == 'GROUP_STAGE']
 matches_playoff = matches[matches.Stage != 'GROUP_STAGE']
 
@@ -92,7 +94,7 @@ preds = pd.read_json('https://dtai.cs.kuleuven.be/sports/worldcup2026/data/predi
 preds[['loss','tie','win','0']] = preds['value'].apply(pd.Series)
 preds = preds.drop(columns=['0','value']).dropna().rename(columns={'index':'Home Team','variable':'Away Team'})
 fixtures = fixtures.merge(preds,how='left')
-fixtures = pd.concat((fixtures,matches_regular[~matches_regular.Home_Score.isna()][['Home_Score','Away_Score','Home_Win','Away_Win','Draw']]),axis=1)
+fixtures = fixtures.merge(matches.rename(columns={'Home':'Home Team','Away':'Away Team'})[['Home Team','Away Team','Home_Score','Away_Score','Home_Win','Away_Win','Draw']],how='left')
 fixtures.loc[~fixtures.Home_Score.isna(),'Result'] = 1
 
 paths = pd.read_json('https://dtai.cs.kuleuven.be/sports/worldcup2026/data/data.json?v=1')
@@ -169,6 +171,7 @@ for team in range(0,len(odds)):
 standings.GD = standings.GF - standings.GA
 standings.Points = standings.W * 3 + standings.D * 1
 standings.Proj += standings.Points
+standings.PPR += standings.Points
 standings = standings.merge(odds_group,how='left',left_on='Short',right_index=True).merge(
     odds.drop(columns=[1]).rename(columns={2:'32',3:'16',4:'QF',5:'SF',6:'Final',7:'Win'}),how='left',left_on='Short',right_index=True).fillna(0)
 standings[' '] = ''
