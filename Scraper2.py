@@ -132,6 +132,7 @@ standings['GD'] = 0
 standings['Proj'] = 0.0
 standings['PPR'] = 0
 standings['Points'] = 0
+standings['PointsbyMatch'] = [[]]*len(standings)
 
 results = fixtures[~fixtures.Result.isna()]
 planned = fixtures[fixtures.Result.isna()]
