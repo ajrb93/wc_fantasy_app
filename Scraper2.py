@@ -18,7 +18,7 @@ selections = {'Steph N':['Spain','Germany','Switzerland','Norway','Czechia','Bos
               'Marcelo K':['France','Germany','Switzerland','Paraguay','Scotland','New Zealand'],
               'Saloni G':['Spain','Germany','Japan','Norway','Scotland','Ghana'],
               'Ayrton FdS':['Argentina','Croatia','Japan','Sweden','Scotland','Ghana'],
-              'Patricia Rhymer':['Portugal','Germany','Australia','Paraguay','Czechia','New Zealand'],
+              'Patricia R':['Portugal','Germany','Australia','Paraguay','Czechia','New Zealand'],
               'Kirby L':['Spain','Germany','Japan','Sweden','Scotland','New Zealand'],
               'Raphael dA':['Brazil','Colombia','Ecuador','Norway','Congo DR','Curaçao'],
               'Andrew P':['England','Colombia','Switzerland','Paraguay','Scotland','Ghana'],
@@ -145,12 +145,16 @@ for match in range(0,len(results)):
     standings.loc[standings.Short == temp['Home Team'],'L'] = standings.L + temp.Away_Win
     standings.loc[standings.Short == temp['Home Team'],'GF'] = standings.GF + temp.Home_Score
     standings.loc[standings.Short == temp['Home Team'],'GA'] = standings.GA + temp.Away_Score
+    standings.loc[standings.Short == temp['Home Team'],'PointsbyMatch'] = standings.PointsbyMatch.apply(lambda lst: lst + [temp.Home_Win * 3 + temp.Draw])
 
     standings.loc[standings.Short == temp['Away Team'],'W'] = standings.W + temp.Away_Win
     standings.loc[standings.Short == temp['Away Team'],'D'] = standings.D + temp.Draw
     standings.loc[standings.Short == temp['Away Team'],'L'] = standings.L + temp.Home_Win
     standings.loc[standings.Short == temp['Away Team'],'GF'] = standings.GF + temp.Away_Score
     standings.loc[standings.Short == temp['Away Team'],'GA'] = standings.GA + temp.Home_Score
+    standings.loc[standings.Short == temp['Away Team'],'PointsbyMatch'] = standings.PointsbyMatch.apply(lambda lst: lst + [temp.Away_Win * 3 + temp.Draw])
+
+    standings.loc[(standings.Short != temp['Home Team']) & (standings.Short != temp['Away Team']),'PointsbyMatch'] = standings.PointsbyMatch.apply(lambda lst: lst + [0])
 
 for match in range(0,len(planned)):
     temp = planned.iloc[match]

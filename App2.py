@@ -91,7 +91,10 @@ with tab_fantasy:
 
     with col3:
         st.markdown('### Standings Over Time')
-        st.markdown('To come')
+        player_over_time = selected_standings[['Person', 'PointsbyMatch']]
+        player_over_time = player_over_time.join(pd.DataFrame(player_over_time['PointsbyMatch'].tolist(),index=player_over_time.index))
+        player_over_time = player_over_time.groupby('Person').sum(numeric_only=True).cumsum(axis=1)
+        st.line_chart(player_over_time,height=250,use_container_width=True)
 
         st.markdown("### Top Teams")
         top_teams = standings.sort_values(['Points','Proj'],ascending=False)[['Flag','Country','Short','Group','Points','PPR','Proj','W','D','L','GD']].rename(
