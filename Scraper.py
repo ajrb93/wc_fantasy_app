@@ -87,8 +87,8 @@ preds = pd.read_json('https://dtai.cs.kuleuven.be/sports/worldcup2026/data/predi
 preds[['loss','tie','win','0']] = preds['value'].apply(pd.Series)
 preds = preds.drop(columns=['0','value']).dropna().rename(columns={'index':'Home Team','variable':'Away Team'})
 fixtures = fixtures.merge(preds,how='left')
-fixtures = fixtures.merge(matches.rename(columns={'Home':'Home Team','Away':'Away Team'})[['key','Home_Score','Away_Score','Home_Win','Away_Win','Draw']],
-                          how='left',on='key')
+fixtures = fixtures.merge(matches.rename(columns={'Home':'Home Team','Away':'Away Team'})[['key','Home_Score','Away_Score',
+                                                                                           'Home_Win','Away_Win','Draw']],how='left',on='key') #
 fixtures.loc[~fixtures.Home_Score.isna(),'Result'] = 1
 fixtures['Home Team'], fixtures['Away Team'] = zip(*fixtures['key'])
 
