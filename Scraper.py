@@ -69,23 +69,28 @@ for i in range(0,len(r.json()['matches'])):
     away_score = temp['score']['fullTime']['away']
     matches.append([date,stage,home_team,away_team,home_score,away_score])
 matches = pd.DataFrame(matches,columns=['Date','Stage','Home','Away','Home_Score','Away_Score'])
-matches.iloc[0].Home_Score = 3
-matches.iloc[0].Away_Score = 1
+matches.Home = matches.Home.replace({v: k for k, v in names.items()})
+matches.Away = matches.Away.replace({v: k for k, v in names.items()})
+matches['key'] = matches.dropna(subset=['Home']).apply(lambda r: tuple(sorted([r['Home'], r['Away']])),axis=1)#
+matches['unsort_key'] = matches.dropna(subset=['Home']).apply(lambda r: tuple(([r['Home'], r['Away']])),axis=1)#
+mask = matches.key != matches.unsort_key
+matches.loc[mask, ['Home_Score', 'Away_Score']] = (matches.loc[mask, ['Away_Score', 'Home_Score']].values)
 matches['Home_Win'] = (matches.Home_Score > matches.Away_Score).astype('int')
 matches['Away_Win'] = (matches.Home_Score < matches.Away_Score).astype('int')
 matches['Draw'] = (matches.Home_Score == matches.Away_Score).astype('int')
-matches.Home = matches.Home.replace({v: k for k, v in names.items()})
-matches.Away = matches.Away.replace({v: k for k, v in names.items()})
 matches_regular = matches[matches.Stage == 'GROUP_STAGE']
 matches_playoff = matches[matches.Stage != 'GROUP_STAGE']
 
 fixtures = pd.read_csv('https://dtai.cs.kuleuven.be/sports/worldcup2026/data/fixtures.csv?v=1')
+fixtures['key'] = fixtures.apply(lambda r: tuple(sorted([r['Home Team'], r['Away Team']])),axis=1) #
 preds = pd.read_json('https://dtai.cs.kuleuven.be/sports/worldcup2026/data/predictions.json?v=1').reset_index().melt(id_vars='index')
 preds[['loss','tie','win','0']] = preds['value'].apply(pd.Series)
 preds = preds.drop(columns=['0','value']).dropna().rename(columns={'index':'Home Team','variable':'Away Team'})
 fixtures = fixtures.merge(preds,how='left')
-fixtures = fixtures.merge(matches.rename(columns={'Home':'Home Team','Away':'Away Team'})[['Home Team','Away Team','Home_Score','Away_Score','Home_Win','Away_Win','Draw']],how='left')
+fixtures = fixtures.merge(matches.rename(columns={'Home':'Home Team','Away':'Away Team'})[['key','Home_Score','Away_Score','Home_Win','Away_Win','Draw']],
+                          how='left',on='key')
 fixtures.loc[~fixtures.Home_Score.isna(),'Result'] = 1
+fixtures['Home Team'], fixtures['Away Team'] = zip(*fixtures['key'])
 
 paths = pd.read_json('https://dtai.cs.kuleuven.be/sports/worldcup2026/data/data.json?v=1')
 odds = []
