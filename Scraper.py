@@ -162,11 +162,11 @@ for match in range(0,len(planned)):
 for team in range(0,len(odds)):
     temp = odds.iloc[team]
     standings.loc[standings.Short == temp.name,'Proj'] = standings.Proj + temp[[3,4,5,6,7]].sum() * 5
-    if standings[standings.Short == temp.name].PPR.values[0] > 0:
-        standings.loc[standings.Short == temp.name,'PPR'] = standings.PPR + 25
+    if temp[2] == 0:
+        ppr = 0
     else:
-        standings.loc[standings.Short == temp.name,'PPR'] = standings.PPR + (len(temp[temp > 0]) - len(temp[temp >= 1]) - 1) * 5
-        #AJ to check once in knockouts but this should work
+        ppr = 25
+    standings.loc[standings.Short == temp.name,'PPR'] = standings.PPR + ppr
 
 standings.GD = standings.GF - standings.GA
 standings.Points = standings.W * 3 + standings.D * 1
