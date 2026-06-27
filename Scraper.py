@@ -71,7 +71,7 @@ for i in range(0,len(r.json()['matches'])):
 matches = pd.DataFrame(matches,columns=['Date','Stage','Home','Away','Home_Score','Away_Score'])
 matches.Home = matches.Home.replace({v: k for k, v in names.items()})
 matches.Away = matches.Away.replace({v: k for k, v in names.items()})
-matches['key'] = matches.dropna(subset=['Home']).apply(lambda r: tuple(sorted([r['Home'], r['Away']])),axis=1)#
+matches['key'] = matches.dropna(subset=['Home','Away']).apply(lambda r: tuple(sorted([r['Home'], r['Away']])),axis=1)#
 matches['unsort_key'] = matches.dropna(subset=['Home']).apply(lambda r: tuple(([r['Home'], r['Away']])),axis=1)#
 mask = matches.key != matches.unsort_key
 matches.loc[mask, ['Home_Score', 'Away_Score']] = (matches.loc[mask, ['Away_Score', 'Home_Score']].values)
