@@ -209,7 +209,7 @@ for team in range(0,len(odds)):
     temp = odds.iloc[team]
     pts = ((temp[[3,4,5,6,7]] == 1).astype('int') * 5).sum()
     proj = ((temp[[3,4,5,6,7]] * 5)).sum() - pts
-    ppr = ((temp[[3,4,5,6,7]] > 0).astype('int') * 5).sum()
+    ppr = ((temp[[3,4,5,6,7]] > 0).astype('int') * 5).sum() - pts
     standings.loc[standings.Short == temp.name,'Points'] = standings.Points + pts
     standings.loc[standings.Short == temp.name,'Proj'] = standings.Proj + proj
     standings.loc[standings.Short == temp.name,'PPR'] = standings.PPR + ppr
