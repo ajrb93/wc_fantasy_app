@@ -117,6 +117,43 @@ odds = odds.groupby(['country','level']).agg({'odds':'sum'}).reset_index().pivot
 odds_group = odds[['1st','2nd','3rd','4th']]
 odds = odds.drop(columns=odds_group.columns)
 
+odds = [['ALG',0.386,0.124,0.024,0.006,0.001],
+        ['ARG',0.978,0.884,0.599,0.39,0.235],
+        ['AUS',0.478,0.053,0.013,0.002,0.001],
+        ['AUT',0.186,0.071,0.027,0.010,0.003],
+        ['BEL',0.550,0.308,0.109,0.052,0.019],
+        ['BIH',0.126,0.021,0.002,0.001,0.001],
+        ['BRA',1.000,0.739,0.436,0.209,0.107],
+        ['CAN',1.000,0.330,0.106,0.026,0.007],
+        ['CPV',0.022,0.009,0.001,0.001,0.001],
+        ['COL',0.874,0.598,0.277,0.144,0.066],
+        ['CRO',0.376,0.102,0.046,0.018,0.005],
+        ['COD',0.107,0.022,0.003,0.001,0.001],
+        ['ECU',0.371,0.146,0.058,0.019,0.006],
+        ['EGY',0.522,0.054,0.014,0.003,0.001],
+        ['ENG',0.893,0.513,0.276,0.128,0.063],
+        ['FRA',0.781,0.625,0.450,0.247,0.133],
+        ['GER',0.000,0.000,0.000,0.000,0.000],
+        ['GHA',0.126,0.029,0.003,0.001,0.001],
+        ['CIV',0.400,0.088,0.030,0.007,0.002],
+        ['JAP',0.000,0.000,0.000,0.000,0.000],
+        ['MEX',0.629,0.319,0.119,0.040,0.013],
+        ['MAR',1.000,0.670,0.312,0.124,0.048],
+        ['NED',0.000,0.000,0.000,0.000,0.000],
+        ['NOR',0.600,0.173,0.077,0.024,0.008],
+        ['PAR',1.000,0.257,0.089,0.022,0.006],
+        ['POR',0.624,0.232,0.144,0.078,0.034],
+        ['SEN',0.450,0.238,0.070,0.028,0.009],
+        ['ESP',0.814,0.595,0.468,0.331,0.205],
+        ['KSA',0.000,0.000,0.000,0.000,0.000],
+        ['SWE',0.219,0.117,0.044,0.011,0.003],
+        ['SUI',0.614,0.249,0.070,0.028,0.010],
+        ['USA',0.874,0.434,0.133,0.052,0.017]]
+
+odds = pd.DataFrame(odds,columns=['country',3,4,5,6,7]).set_index('country')
+odds[2] = 1
+odds = odds[[2,3,4,5,6,7]]
+
 standings = groups.copy(True)
 standings['W'] = 0
 standings['D'] = 0
@@ -151,7 +188,7 @@ for match in range(0,len(results)):
     standings.loc[standings.Short == temp['Away Team'],'PointsbyMatch'] = standings.PointsbyMatch.apply(lambda lst: lst + [temp.Away_Win * 3 + temp.Draw])
 
     standings.loc[(standings.Short != temp['Home Team']) & (standings.Short != temp['Away Team']),'PointsbyMatch'] = standings.PointsbyMatch.apply(lambda lst: lst + [0])
-
+    
 for match in range(0,len(planned)):
     temp = planned.iloc[match]
     standings.loc[standings.Short == temp['Home Team'],'Proj'] = standings.Proj + temp.win * 3 + temp.tie
@@ -161,19 +198,22 @@ for match in range(0,len(planned)):
 
 for team in range(0,len(odds)):
     temp = odds.iloc[team]
-    standings.loc[standings.Short == temp.name,'Proj'] = standings.Proj + temp[[3,4,5,6,7]].sum() * 5
-    if temp[2] == 0:
-        ppr = 0
-    else:
-        ppr = 25
+    pts = ((temp[[3,4,5,6,7]] == 1).astype('int') * 5).sum()
+    proj = ((temp[[3,4,5,6,7]] * 5)).sum() - pts
+    ppr = ((temp[[3,4,5,6,7]] > 0).astype('int') * 5).sum()
+    standings.loc[standings.Short == temp.name,'Points'] = standings.Points + pts
+    standings.loc[standings.Short == temp.name,'Proj'] = standings.Proj + proj
     standings.loc[standings.Short == temp.name,'PPR'] = standings.PPR + ppr
+    standings.loc[standings.Short == temp.name, 'PointsbyMatch'] = standings.loc[standings.Short == temp.name, 'PointsbyMatch'].apply(lambda lst: lst + ((temp[[3,4,5,6,7]] == 1).astype(int) * 5).tolist())
 
 standings.GD = standings.GF - standings.GA
-standings.Points = standings.W * 3 + standings.D * 1
+standings.Points = standings.W * 3 + standings.D * 1 + standings.Points
 standings.Proj += standings.Points
 standings.PPR += standings.Points
 standings = standings.merge(odds_group,how='left',left_on='Short',right_index=True).merge(
-    odds.drop(columns=[1]).rename(columns={2:'32',3:'16',4:'QF',5:'SF',6:'Final',7:'Win'}),how='left',left_on='Short',right_index=True).fillna(0)
+    odds.rename(columns={2:'32',3:'16',4:'QF',5:'SF',6:'Final',7:'Win'}),how='left',left_on='Short',right_index=True).fillna(0)
+#standings = standings.merge(odds_group,how='left',left_on='Short',right_index=True).merge(
+#    odds.drop(columns=[1]).rename(columns={2:'32',3:'16',4:'QF',5:'SF',6:'Final',7:'Win'}),how='left',left_on='Short',right_index=True).fillna(0)
 standings[' '] = ''
 
 selected_standings = selections.merge(standings)
